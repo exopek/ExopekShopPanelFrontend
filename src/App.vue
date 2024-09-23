@@ -1,6 +1,10 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-  <TestZone/>
+   <!-- background image -->
+    <div class="gradient-background">
+      <TestZone/>
+    </div>
+  
 </template>
 
 <script>
@@ -22,5 +26,14 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.gradient-background {
+  min-height: 100vh; /* Volle Viewport-Höhe */
+  background: linear-gradient(to bottom, #000000, #333333);
+  color: white; /* Textfarbe für bessere Lesbarkeit */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -28,6 +28,27 @@ export default {
             
             return orders;
         },
+        async updateOrder(_, order) {
+            console.log("test Order");
+            console.log(order.id);
+            const response = await axios.put(
+                `http://localhost:5136/api/dev/orders/${order.id}?status=1`,
+                null,  // Kein Request-Body nötig für Query-Parameter
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            console.log(response.status);
+            if (!response.status === 200) {
+                throw new Error("Something went wrong!");
+            }
+            const updatedOrder = await response.data;
+            console.log(updatedOrder);
+            
+            return updatedOrder;
+        },
     },
     getters: {
         allOrders(state) {

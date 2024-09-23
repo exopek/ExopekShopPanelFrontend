@@ -1,11 +1,12 @@
 
 
 export default class Order {
-    constructor({ id, createdAt, total, status }) {
+    constructor({ id, createdAt, total, status, shippedStatus }) {
         this.id = id;
         this.createdAt = createdAt;
         this.total = total;
         this.status = status;
+        this.shippedStatus = shippedStatus;
     }
 
     static fromJson(json) {
@@ -14,6 +15,7 @@ export default class Order {
         this.createdAt = json.createdAt;
         this.total = json.total;
         this.status = json.status;
+        this.shippedStatus = json.shippedStatus;
     
         return this;
     }
