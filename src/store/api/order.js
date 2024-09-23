@@ -12,7 +12,8 @@ export default {
     },
     actions: {
         async getOrders() {
-            const response = await axios.get("http://localhost:5136/api/dev/orders",
+            const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const response = await axios.get(`${apiBaseUrl}/api/dev/orders`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -31,8 +32,9 @@ export default {
         async updateOrder(_, order) {
             console.log("test Order");
             console.log(order.id);
+            const apiBaseUrl = process.env.VUE_APP_API_URL;
             const response = await axios.put(
-                `http://localhost:5136/api/dev/orders/${order.id}?status=1`,
+                `${apiBaseUrl}/api/dev/orders/${order.id}?status=1`,
                 null,  // Kein Request-Body nötig für Query-Parameter
                 {
                     headers: {

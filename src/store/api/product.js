@@ -4,7 +4,8 @@ export default {
     namespaced: true,
     actions: {
         async getProducts() {
-            const response = await axios.get("http://localhost:5136/api/dev/products",
+            const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const response = await axios.get(`${apiBaseUrl}/api/dev/products`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -21,10 +22,11 @@ export default {
             return products;
         },
         async updateProduct(_, product) {
+            const apiBaseUrl = process.env.VUE_APP_API_URL;
             console.log("test Product");
             console.log(product.id);
             const response = await axios.put(
-                `http://localhost:5136/api/dev/products/${product.id}?quantity=${product.quantity}`,
+                `${apiBaseUrl}/api/dev/products/${product.id}?quantity=${product.quantity}`,
                 null,  // Kein Request-Body nötig für Query-Parameter
                 {
                     headers: {
@@ -42,7 +44,8 @@ export default {
             return updatedProduct;
         },
         async getComponents() {
-            const response = await axios.get("http://localhost:5136/api/dev/components",
+            const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const response = await axios.get(`${apiBaseUrl}/api/dev/components`,
                 {
                     headers: {
                         "Content-Type": "application/json",
