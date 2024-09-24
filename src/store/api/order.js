@@ -17,6 +17,7 @@ export default {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "https://brave-smoke-07a4fba03.5.azurestaticapps.net"
                     },
                 }
             );
@@ -39,6 +40,7 @@ export default {
                 {
                     headers: {
                         "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "https://brave-smoke-07a4fba03.5.azurestaticapps.net"
                     },
                 }
             );
