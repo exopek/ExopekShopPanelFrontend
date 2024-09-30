@@ -1,9 +1,15 @@
 <template>
   <div>
-    <div id="col-2">
-      <Line :chartD="chartData" />
-      <div>
-        <table id="test">
+    <Chart
+      class="chart-container"
+      type="bar"
+      :data="chartData"
+      :options="ChartOptions"
+    />
+
+    <p>Open Tasks</p>
+    <div class="open-task-table-update">
+      <table>
         <thead>
           <tr>
             <th>Index</th>
@@ -14,30 +20,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(order, index) in orders.slice(0,8)" :key="index">
+          <tr v-for="(order, index) in orders.slice(0, 8)" :key="index">
             <td>{{ index + 1 }}</td>
             <td>{{ order.total }}</td>
             <td>{{ formatOrderDate(order.createdAt) }}</td>
             <td>{{ statusType(order.status) }}</td>
             <td v-if="order.shippedStatus === 2">
-              <div id="col-3">
-                <button @click="changeOrder(order)" style="background-color: cadetblue;">Ship</button>
-              </div>
+              
+                <Button class="button" @click="changeOrder(order)">Shipped</Button>
+              
             </td>
             <td v-else>
-              <div id="col-3">
-                <p>Shipped</p>
-              </div>
+              
+                <p>Undefined</p>
+              
             </td>
           </tr>
         </tbody>
       </table>
-      </div>
-      
+      <Button @click="syncOrders">Refresh Tasks</Button>
     </div>
 
-    <div id="col-2">
-      <table id="test">
+    
+    <div>
+      <p>Products</p>
+      <table>
         <thead>
           <tr>
             <th>Index</th>
@@ -55,16 +62,16 @@
             <td>{{ product.quantity }}</td>
             <td>
               <div id="col-2">
-                <input v-model="productInputs[product.id]"/>
-                <button @click="changeProduct(product)">Add</button>
+                <input v-model="productInputs[product.id]" />
+                <Button class="button" @click="changeProduct(product)">Add</Button>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div>
-        <table id="test">
+      <p>Components</p>
+        <table>
           <thead>
             <tr>
               <th>Index</th>
@@ -82,19 +89,21 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      
     </div>
   </div>
 </template>
 
 <script>
 import Order from "../domain/models/Order";
-import Line from "./LineChart.vue";
+import Button from "primevue/button";
+import Chart from "primevue/chart";
 
 export default {
   name: "TestZone",
   components: {
-    Line,
+    Button,
+    Chart,
   },
   data() {
     return {
@@ -102,66 +111,77 @@ export default {
       products: [],
       components: [],
       addQuantity: 0,
-      productInputs: {}
+      productInputs: {},
     };
   },
   methods: {
+    syncOrders() {
+      console.log("syncOrders");
+      const result = this.$store.dispatch("order/syncOrders");
+      if (result !== null) {
+        console.log("result", result);
+        this.init();
+      }
+    },
     changeOrder(order) {
-        console.log("changeOrder", order.id);
-        const orderUpdateResult = this.$store.dispatch("order/updateOrder", {
-            id: order.id,
-        });
-        if (orderUpdateResult !== null) {
-            console.log("orderUpdateResult", orderUpdateResult);
-            this.init();
-        }
+      console.log("changeOrder", order.id);
+      const orderUpdateResult = this.$store.dispatch("order/updateOrder", {
+        id: order.id,
+      });
+      if (orderUpdateResult !== null) {
+        console.log("orderUpdateResult", orderUpdateResult);
+        this.init();
+      }
     },
     async init() {
-        const result = await this.$store.dispatch({
-      type: "order/getOrders",
-    });
-    /* map to list to of orders */
-    const mappedOrders = result.map((x) => {
-      console.log(x);
-      var order = new Order({
-        id: x.id,
-        createdAt: x.createdAt,
-        total: x.total,
-        status: x.status,
-        shippedStatus: x.shippedStatus,
+      const result = await this.$store.dispatch({
+        type: "order/getOrders",
       });
-      return order;
-    });
-    this.orders = mappedOrders;
+      /* map to list to of orders */
+      const mappedOrders = result.map((x) => {
+        console.log(x);
+        var order = new Order({
+          id: x.id,
+          createdAt: x.createdAt,
+          total: x.total,
+          status: x.status,
+          shippedStatus: x.shippedStatus,
+        });
+        return order;
+      });
+      this.orders = mappedOrders;
 
-    console.log("result", this.orders);
+      console.log("result", this.orders);
 
-    const productResult = await this.$store.dispatch({
-      type: "product/getProducts",
-    });
+      const productResult = await this.$store.dispatch({
+        type: "product/getProducts",
+      });
 
-    this.products = productResult;
-    this.products.forEach((product) => {
-      this.productInputs[product.id] = 0;
-    });
+      this.products = productResult;
+      this.products.forEach((product) => {
+        this.productInputs[product.id] = 0;
+      });
 
-    const componentResult = await this.$store.dispatch({
-      type: "product/getComponents",
-    });
-    console.log("componentResult", componentResult);
+      const componentResult = await this.$store.dispatch({
+        type: "product/getComponents",
+      });
+      console.log("componentResult", componentResult);
 
-    this.components = componentResult;
+      this.components = componentResult;
     },
     formatOrderDate(date) {
       return new Date(date).toLocaleDateString();
     },
     changeProduct(product) {
       console.log("changeProduct", product.id);
-      const quantity = this.productInputs[product.id]
-      const productUpdateResult = this.$store.dispatch("product/updateProduct", {
-        id: product.id,
-        quantity: quantity,
-      });
+      const quantity = this.productInputs[product.id];
+      const productUpdateResult = this.$store.dispatch(
+        "product/updateProduct",
+        {
+          id: product.id,
+          quantity: quantity,
+        }
+      );
       if (productUpdateResult !== null) {
         console.log("productUpdateResult", productUpdateResult);
         this.init();
@@ -177,21 +197,21 @@ export default {
       if (type === 2) {
         return "Processing";
       }
-        if (type === 3) {
-            return "OnHold";
-        }
-        if (type === 4) {
-            return "Completed";
-        }
-        if (type === 5) {
-            return "Cancelled";
-        }
-        if (type === 6) {
-            return "Refunded";
-        }
-        if (type === 7) {
-            return "Failed";
-        }
+      if (type === 3) {
+        return "OnHold";
+      }
+      if (type === 4) {
+        return "Completed";
+      }
+      if (type === 5) {
+        return "Cancelled";
+      }
+      if (type === 6) {
+        return "Refunded";
+      }
+      if (type === 7) {
+        return "Failed";
+      }
       return "";
     },
     getMonthString(date) {
@@ -248,6 +268,45 @@ export default {
         backgroundColor: "green",
       };
     },
+    ChartOptions() {
+      const documentStyle = getComputedStyle(document.documentElement);
+      const textColor = documentStyle.getPropertyValue("--p-text-color");
+      const textColorSecondary = documentStyle.getPropertyValue(
+        "--p-text-muted-color"
+      );
+      const surfaceBorder = documentStyle.getPropertyValue(
+        "--p-content-border-color"
+      );
+
+      return {
+        plugins: {
+          legend: {
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+          },
+        },
+      };
+    },
     chartData() {
       const labels = this.orders
         .filter((x) => new Date(x.createdAt).getFullYear() === 2024)
@@ -265,10 +324,6 @@ export default {
         datasets: [
           {
             label: "Orders",
-            fill: false,
-            borderColor: "#f87920",
-            backgroundColor: "#f87920",
-            tension: 0.1,
             data: countedEqualLabels,
           },
         ],
@@ -293,7 +348,7 @@ table {
   border: 1px solid #525050;
 }
 
-#test {
+.test {
   width: 100%;
   font-family: Arial, sans-serif;
   background-color: rgb(60, 58, 58);
@@ -345,5 +400,22 @@ tr:hover {
   min-height: 100vh;
   background: linear-gradient(to bottom, #000000, #333333);
   color: white;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+}
+
+.open-task-table-update {
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 24px;
+  border-radius: 4px;
 }
 </style>

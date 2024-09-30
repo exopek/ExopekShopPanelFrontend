@@ -5,11 +5,12 @@ export default {
     actions: {
         async getProducts() {
             const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const clientUrl = process.env.VUE_APP_CLIENT_URL;
             const response = await axios.get(`${apiBaseUrl}/api/dev/products`,
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "https://brave-smoke-07a4fba03.5.azurestaticapps.net"
+                        "Access-Control-Allow-Origin": `${clientUrl}`,
                     },
                 }
             );
@@ -24,6 +25,7 @@ export default {
         },
         async updateProduct(_, product) {
             const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const clientUrl = process.env.VUE_APP_CLIENT_URL;
             console.log("test Product");
             console.log(product.id);
             const response = await axios.put(
@@ -32,7 +34,7 @@ export default {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "https://brave-smoke-07a4fba03.5.azurestaticapps.net"
+                        "Access-Control-Allow-Origin": `${clientUrl}`,
                     },
                 }
             );
@@ -47,11 +49,12 @@ export default {
         },
         async getComponents() {
             const apiBaseUrl = process.env.VUE_APP_API_URL;
+            const clientUrl = process.env.VUE_APP_CLIENT_URL;
             const response = await axios.get(`${apiBaseUrl}/api/dev/components`,
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "https://brave-smoke-07a4fba03.5.azurestaticapps.net"
+                        "Access-Control-Allow-Origin": `${clientUrl}`,
                     },
                 }
             );
