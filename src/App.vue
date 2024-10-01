@@ -21,8 +21,6 @@ export default {
 <style>
 
 .gradient-background {
-  min-height: 100vh; /* Volle Viewport-Höhe */
-  background: linear-gradient(to bottom, #000000, #333333);
   color: white; /* Textfarbe für bessere Lesbarkeit */
   display: flex;
   justify-content: center;

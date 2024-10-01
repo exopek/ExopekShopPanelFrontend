@@ -1,5 +1,71 @@
 <template>
   <div>
+    <Dialog v-model:visible="visible" :style="{ width: '50vw' }" header="Create Order">
+            <p>Customer Information</p>
+            <div style="column-count: 1;">
+                <label for="firstname">Firstname</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="firstname" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="lastname">Lastname</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="lastname" autocomplete="off" />
+            </div>
+            
+            <div style="column-count: 1; margin-top: 10px;">
+                <label for="email">Email</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="email" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="phone">Phone</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="phone" autocomplete="off" />
+            </div>
+            
+            <p>Billing Address</p>
+            <div style="column-count: 1;">
+                <label for="street">Street</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="street" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="housenumber">HouseNumber</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="housenumber" autocomplete="off" />
+            </div>
+
+            <div style="column-count: 1; margin-top: 10px;">
+                <label for="postalcode">PostalCode</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="postalcode" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="city">City</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="city" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="state">State</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="state" autocomplete="off" />
+            </div>
+            <p>Product Information</p>
+            <div style="column-count: 1;">
+                <label for="total">Total</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="total" autocomplete="off" />
+                <span style="margin-right: 10px;"></span>
+                <label for="totaltax">Total Tax</label>
+                <span style="margin-right: 10px;"></span>
+                <InputText id="totaltax" autocomplete="off" />
+            </div>
+            <div style="column-count: 1; margin-top: 10px;">
+              <MultiSelect v-model="selectedProducts" display="chip" :options="productSelections" optionLabel="name" filter placeholder="Select Products"
+              :maxSelectedLabels="3" class="w-full md:w-80" />
+            </div>
+            <div style="margin-top: 20px;">
+              <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+              <span style="margin-right: 10px;"></span>
+              <Button type="button" label="Save" @click="visible = false"></Button>
+            </div>
+        </Dialog>
     <Chart
       class="chart-container"
       type="bar"
@@ -7,7 +73,12 @@
       :options="ChartOptions"
     />
 
-    <p>Open Tasks</p>
+    <div style="flex: content; margin-bottom: 10px;">
+      <p>Open Tasks</p>
+      <Button @click="syncOrders">Refresh Tasks</Button>
+      <span style="margin-right: 10px;"></span>
+      <Button @click="visible = true">Create Order</Button>
+    </div>
     <div class="open-task-table-update">
       <table>
         <thead>
@@ -38,7 +109,7 @@
           </tr>
         </tbody>
       </table>
-      <Button @click="syncOrders">Refresh Tasks</Button>
+      
     </div>
 
     
@@ -98,12 +169,18 @@
 import Order from "../domain/models/Order";
 import Button from "primevue/button";
 import Chart from "primevue/chart";
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import MultiSelect from 'primevue/multiselect';
 
 export default {
   name: "TestZone",
   components: {
     Button,
     Chart,
+    Dialog,
+    InputText,
+    MultiSelect
   },
   data() {
     return {
@@ -112,6 +189,15 @@ export default {
       components: [],
       addQuantity: 0,
       productInputs: {},
+      visible: false,
+      productSelections: [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' }
+      ],
+      selectedProducts: null,
     };
   },
   methods: {
