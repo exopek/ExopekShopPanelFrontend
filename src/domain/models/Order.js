@@ -23,4 +23,26 @@ export default class Order {
     static formattedCreatedAt() {
         return new Date(this.createdAt).toLocaleDateString();
     }
+
+    static orderReadDto({ firstName, lastName, email, phoneNumber, street, houseNumber, postalCode, city, state, country, total, totalTax, orderItems }) {
+
+        return {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+            address: {
+                street: street,
+                houseNumber: houseNumber,
+                city: city,
+                postalCode: postalCode,
+                state: state,
+                country: country,
+            },
+            total: total,
+            totalTax: totalTax,
+            paymentMethod: "Rechnung",
+            orderItems: orderItems,
+        };
+    }
 }
